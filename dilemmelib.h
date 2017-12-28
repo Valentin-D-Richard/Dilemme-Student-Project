@@ -42,7 +42,3 @@ void mefiante (bool** g, int i, int r) {
   (i == 0) ? : g[0][r] = false : g[i][r] = g[i-1][1-r] ;
 }
 
-
-int main (int argc, char** argv) {
-  return(0);
-  }
