@@ -1,4 +1,4 @@
-#include <dilemmelib.h>
+#include "dilemmelib.h"
 
 bool** affr(void strat1(bool**,int,int), void strat2(bool**,int,int), int n) {
   bool** g = malloc(n*sizeof(bool*));
