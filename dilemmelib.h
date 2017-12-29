@@ -12,11 +12,11 @@
 // L'action d'une joueur est un booléen : true signifie coopérer et false trahir
 
 int* gain(bool a, bool b) {
-  int t[2];
-  (a && b) ? (t[0] = C, t[1] = C) : () ;
-  (a && !b) ? (t[0] = D, t[1] = T) : () ;
-  (!a && b) ? (t[0] = T, t[1] = D) : () ;
-  (!a && !b) ? (t[0] = P, t[1] = P) : () ;
+  int *t = malloc(2*sizeof(int));
+  (a && b)  ? (t[0] = C, t[1] = C) : 
+  (a && !b) ? (t[0] = D, t[1] = T) : 
+  (!a && b) ? (t[0] = T, t[1] = D) : 
+              (t[0] = P, t[1] = P) ;
   return(t);
 }
 
