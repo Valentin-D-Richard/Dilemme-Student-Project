@@ -13,10 +13,10 @@
 
 int* gain(bool a, bool b) {
   int t[2];
-  (a && b) ? (t[0] = C, t[1] = C) : ;
-  (a && !b) ? (t[0] = D, t[1] = T) : ;
-  (!a && b) ? (t[0] = T, t[1] = D) : ;
-  (!a && !b) ? (t[0] = P, t[1] = P) : ;
+  (a && b) ? (t[0] = C, t[1] = C) : () ;
+  (a && !b) ? (t[0] = D, t[1] = T) : () ;
+  (!a && b) ? (t[0] = T, t[1] = D) : () ;
+  (!a && !b) ? (t[0] = P, t[1] = P) : () ;
   return(t);
 }
 
@@ -35,10 +35,10 @@ void mechante (bool** g, int i, int r) {
 }
 
 void donnant_donnant (bool** g, int i, int r) {
-  (i == 0) ? : (g[0][r] = true) : (g[i][r] = g[i-1][1-r]) ;
+  (i == 0) ? (g[0][r] = true) : (g[i][r] = g[i-1][1-r]) ;
 }
 
 void mefiante (bool** g, int i, int r) {
-  (i == 0) ? : (g[0][r] = false) : (g[i][r] = g[i-1][1-r]) ;
+  (i == 0) ? (g[0][r] = false) : (g[i][r] = g[i-1][1-r]) ;
 }
 
