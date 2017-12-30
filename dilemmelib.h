@@ -4,7 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// ***** Fonctions utiles pour toutes les parties
+// ***** Déclarations *****
+
+int sum(int** g, int i, int r) ;
+
+// ***** Fonctions utiles pour toutes les parties *****
 
 #define T 5
 #define D 0
@@ -42,37 +46,33 @@ void mefiante (int** g, int i, int r) {
   (i == 0) ? (g[0][r] = 0) : (g[i][r] = g[i-1][1-r]) ;
 }
 
-void periodique_mechante (int** g, int i, int r){
-	(i%3==2) ? (g[i][r]=1) : (g[i][r]=0);
+void periodique_mechante (int** g, int i, int r) {
+  (i%3 == 2) ? (g[i][r] = 1) : (g[i][r] = 0);
 }
 
-void periodique_gentille (int** g, int i, int r){
-	(i%3==2) ? (g[i][r]=0) : (g[i][r]=1);
+void periodique_gentille (int** g, int i, int r) {
+  (i%3 == 2) ? (g[i][r] = 0) : (g[i][r] = 1);
 }
 
-void majorite_mou (int** g, int i, int r){
-	(i==0) ? (g[i][r] = 1):
-	int s =maj(g,1-r,i);
-	(s>=1) ? (g[i][r] = 1) : (g[i][r] = 0);
+void majorite_mou (int** g, int i, int r) {
+  (i == 0 || sum(g,i,1-r) >= (i+1)/2) ? (g[i][r] = 1) : (g[i][r] = 0);
 }
 
-void majorite_dur (int** g, int i, int r){
-	(i==0) ? (g[i][r] = 0):
-	int s =maj(g,1-r,i);
-	(s>1) ? (g[i][r] = 1) : (g[i][r] = 0);
+void majorite_dur (int** g, int i, int r) {
+  (i == 0 || sum(g,i,1-r) <= i/2) ? (g[i][r] = 0) : (g[i][r] = 1);
 }
 
-void sondeur (int** g, int i, int r){
-	(i==0)? (g[i][r] = 0) : (i==1) ? (g[i][r] = 1) : (i==2) ? (g[i][r] = 1) :
-	(g[1][1-r]==1 && g[2][1-r]==1) ? (g[i][r] = 0) : (g[i][r] = g[i-1][1-r]) ;
+void sondeur (int** g, int i, int r) {
+  (i == 0)? (g[i][r] = 0) : (i <= 2) ? (g[i][r] = 1) :
+    (g[1][1-r] && g[2][1-r]) ? (g[i][r] = 0) : (g[i][r] = g[i-1][1-r]) ;
 }
 
-void donnant_donnant_dur (int** g ,int i, int r){
-	(i==0||i==1) ? (g[i][r] = 1) : (g[i-1][1-r]==0 || g[i-2][1-r]==0) ? (g[i][r] = 0) : (g[i][r] = 1);
+void donnant_donnant_dur (int** g ,int i, int r) {
+  (i == 0 || (i == 1 && g[0][1-r]) || (i > 1 && g[i-1][1-r] & g[i-2][1-r])) ? (g[i][r] = 1) : (g[i][r] = 0) ;
 }
 
-void rancunier ( int** g,int i, int r){
-	(i==0) ? (g[i][r] = 1) : (trahison(g,1-r,i)) ? (g[i][r] = 0) : (g[i][r] = 1);
+void rancuniere ( int** g,int i, int r) {
+  (i == 0 || sum(g,i,1-r) == i) ? (g[i][r] = 1) : (g[i][r] = 0) ;
 }
 
 
@@ -89,13 +89,12 @@ void init_dico() {
   dico[2].name = "donnant_donnant" ; dico[2].fun = &donnant_donnant ;
   dico[3].name = "mefiante" ; dico[3].fun = &mefiante ;
   dico[4].name = "periodique_mechante" ; dico[4].fun = &periodique_mechante ;
-dico[5].name = "periodique_gentille" ; dico[5].fun = &periodique_gentille ;
-dico[6].name = "majorite_mou" ; dico[6].fun = &majorite_mou ;
-dico[7].name = "majorite_dur" ; dico[7].fun = &majorite_dur ;
-dico[8].name = "sondeur" ; dico[8].fun = &sondeur ;
-dico[9].name = "donnant_donnant_dur" ; dico[9].fun = &donnant_donnant_dur ;
-dico[10].name = "rancunier" ; dico[10].fun = &rancunier ;
-	
+  dico[5].name = "periodique_gentille" ; dico[5].fun = &periodique_gentille ;
+  dico[6].name = "majorite_mou" ; dico[6].fun = &majorite_mou ;
+  dico[7].name = "majorite_dur" ; dico[7].fun = &majorite_dur ;
+  dico[8].name = "sondeur" ; dico[8].fun = &sondeur ;
+  dico[9].name = "donnant_donnant_dur" ; dico[9].fun = &donnant_donnant_dur ;
+  dico[10].name = "rancuniere" ; dico[10].fun = &rancuniere ;	
 }
 
 int assoc(char* nom) {
@@ -105,22 +104,26 @@ int assoc(char* nom) {
   return(-1);
 }
 
-//calcul la majorité dans un tableau jusqu'à l'indice i on suppose i<=taille tableau et r la ligne qu'on regarde
- int maj(int** g, int r, int i){
-	 int s
-for (int j=0,j<(i-1),j++){
-	s=s+g[j][r];
-}
-(s==(i/2)) ? (return 2) : (s>(i/2)) ? (return 1) : (return 0);
- }
-
-//fonction spéciale pour rancunier qui renvoie oui si l'adversaire a trahi
-int trahison(int** g, int r, int i){
-	for (int j=0,j<(i-1),j++){
-		(g[j][r]==0) ? (return true)
-	}
-	return false
+int sum(int** g, int i, int r) {
+  int s = 0;
+  for (int j = 0; j < i; j++) s += g[j][r] ;
+  return(s);
 }
 
+// ***** Fonctions d'affichage *****
 
+void print_affr(int** g, int n, int i1, int i2) {
+  // Affiche en colonnes les affrontements dans g de i1 contre i2
+  printf("%s vs %s : \n",dico[i1].name, dico[i2].name);
+  for (int j = 0; j < n; j++) printf("%d à %d\n",g[j][0],g[j][1]) ;
+}
+  
+void print_cmpct(int** g, int n, int r) {
+  // Affiche de manière compacte la colonne r de g en ligne, suivi d'un espace
+  for (int j = 0; j < n; j++) printf("%d",g[j][r]) ;
+  printf(" ");
+}
 
+void repeat(char* s, int n) {
+  for (int i = 0; i < n; i++) printf("%s",s) ;
+}
