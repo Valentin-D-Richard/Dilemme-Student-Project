@@ -65,7 +65,7 @@ void majorite_dur (int** g, int i, int r){
 
 typedef struct dictionnaire { char* name ; void (*fun)(int**,int,int); } dictionnaire ;
 
-#define N 6 // Nombre de stratégies
+#define N 8 // Nombre de stratégies
 dictionnaire dico[N]; // Dictionnaire d'associations
 
 void init_dico() {
@@ -75,7 +75,8 @@ void init_dico() {
   dico[3].name = "mefiante" ; dico[3].fun = &mefiante ;
   dico[4].name = "periodique_mechante" ; dico[4].fun = &periodique_mechante ;
 dico[5].name = "periodique_gentille" ; dico[5].fun = &periodique_gentille ;
-
+dico[6].name = "majorite_mou" ; dico[6].fun = &majorite_mou ;
+dico[7].name = "majorite_dur" ; dico[7].fun = &majorite_dur ;
 }
 
 int assoc(char* nom) {
