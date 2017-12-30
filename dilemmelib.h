@@ -52,20 +52,35 @@ void periodique_gentille (int** g, int i, int r){
 
 void majorite_mou (int** g, int i, int r){
 	(i==0) ? (g[i][r] = 1):
-	int s =maj(g,1-r);
+	int s =maj(g,1-r,i);
 	(s>=1) ? (g[i][r] = 1) : (g[i][r] = 0);
 }
 
 void majorite_dur (int** g, int i, int r){
 	(i==0) ? (g[i][r] = 0):
-	int s =maj(g,1-r);
+	int s =maj(g,1-r,i);
 	(s>1) ? (g[i][r] = 1) : (g[i][r] = 0);
 }
+
+void sondeur (int** g, int i, int r){
+	(i==0)? (g[i][r] = 0) : (i==1) ? (g[i][r] = 1) : (i==2) ? (g[i][r] = 1) :
+	(g[1][1-r]==1 && g[2][1-r]==1) ? (g[i][r] = 0) : (g[i][r] = g[i-1][1-r]) ;
+}
+
+void donnant_donnant_dur (int** g ,int i, int r){
+	(i==0||i==1) ? (g[i][r] = 1) : (g[i-1][1-r]==0 || g[i-2][1-r]==0) ? (g[i][r] = 0) : (g[i][r] = 1);
+}
+
+void rancunier ( int** g,int i, int r){
+	(i==0) ? (g[i][r] = 1) : (trahison(g,1-r,i)) ? (g[i][r] = 0) : (g[i][r] = 1);
+}
+
+
 // ***** Fonctions générales *****
 
 typedef struct dictionnaire { char* name ; void (*fun)(int**,int,int); } dictionnaire ;
 
-#define N 8 // Nombre de stratégies
+#define N 11 // Nombre de stratégies
 dictionnaire dico[N]; // Dictionnaire d'associations
 
 void init_dico() {
@@ -77,6 +92,10 @@ void init_dico() {
 dico[5].name = "periodique_gentille" ; dico[5].fun = &periodique_gentille ;
 dico[6].name = "majorite_mou" ; dico[6].fun = &majorite_mou ;
 dico[7].name = "majorite_dur" ; dico[7].fun = &majorite_dur ;
+dico[8].name = "sondeur" ; dico[8].fun = &sondeur ;
+dico[9].name = "donnant_donnant_dur" ; dico[9].fun = &donnant_donnant_dur ;
+dico[10].name = "rancunier" ; dico[10].fun = &rancunier ;
+	
 }
 
 int assoc(char* nom) {
@@ -87,11 +106,21 @@ int assoc(char* nom) {
 }
 
 //calcul la majorité dans un tableau jusqu'à l'indice i on suppose i<=taille tableau et r la ligne qu'on regarde
- int maj(int** g, int r){
+ int maj(int** g, int r, int i){
 	 int s
 for (int j=0,j<(i-1),j++){
 	s=s+g[j][r];
 }
 (s==(i/2)) ? (return 2) : (s>(i/2)) ? (return 1) : (return 0);
  }
-	
+
+//fonction spéciale pour rancunier qui renvoie oui si l'adversaire a trahi
+int trahison(int** g, int r, int i){
+	for (int j=0,j<(i-1),j++){
+		(g[j][r]==0) ? (return true)
+	}
+	return false
+}
+
+
+
