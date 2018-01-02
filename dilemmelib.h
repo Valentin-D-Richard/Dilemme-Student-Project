@@ -24,7 +24,7 @@ void gain(int *p, int* t) {
 	{ t[0] = P; t[1] = P; } 
 }
 
-int* gain_partie(void strat1(int**,int,int),void strat2(int**,int,int), int n) {
+int* gain_partie(void strat1(int**,int,int), void strat2(int**,int,int), int n) {
 	int** g[n][2] ;
 	for (int i=0,i<n,i++){
 		strat1(g,i,0);
