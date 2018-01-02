@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <math.h>
  
- // n c'est le nombre de générations et p c'est la population à donné à chaque stratégie
-//et nb le nombre de confrontation pour les gains des strats
+// n c'est le nombre de générations et p c'est la population à donner à chaque stratégie
+//et nb le nombre de confrontations pour les gains des strats
 
 int** ecosysteme ( int n, int p, int nb){
  init_dico();
