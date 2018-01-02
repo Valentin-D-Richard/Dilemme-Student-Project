@@ -24,6 +24,24 @@ void gain(int *p, int* t) {
 	{ t[0] = P; t[1] = P; } 
 }
 
+int* gain_partie(void strat1(int**,int,int),void strat2(int**,int,int), int n) {
+	int** g[n][2] ;
+	for (int i=0,i<n,i++){
+		strat1(g,i,0);
+		strat2(g,i,1);
+	}
+	int** t[n][2];
+	int* s[2];
+	s[0]=0;
+	s[1]=0;
+	for (int i=0, i<n, i++){
+		void gain(int* g[i], int* t[i]);
+		s[0]+=t[i][0];
+		s[1]+=t[i][1];
+	}
+	return s;
+}
+	
 // Une stratégie est un fonction du type void strat(int**  g, int i, int r)
 // où g est la matrice des affrontements contre un adversaire,
 //    i indique le numéro du coup
