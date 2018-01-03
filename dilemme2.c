@@ -38,7 +38,8 @@ int** ecosysteme ( int n, int p, int nb){
   //je vais remplir maintenant la i-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
   for (int j=0,j<10,j++){
-   c[j][i]=floor(11*p*(P[j]/s1));
+   c[j][i]=11*p*P[j];
+   c[j][i]/=s1;
    s2+=c[j][i]; 
   }
   c[10][i]=11*p-s2;
