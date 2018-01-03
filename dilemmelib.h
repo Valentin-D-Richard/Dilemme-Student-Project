@@ -17,29 +17,28 @@ int sum(int** g, int i, int r) ;
 
 // L'action d'une joueur est un entier : 1 signifie coopérer et 0 trahir
 
+char* verbe(int a) { return(a ? "coopère" : "trahit"); }
+
 void gain(int *p, int* t) {
-  if (p[0] && p[1])  { t[0] = C; t[1] = C; } else 
-    if (p[0] && !p[1]) { t[0] = D; t[1] = T; } else
-      if (!p[1] && p[0]) { t[0] = T; t[1] = D; } else
-	{ t[0] = P; t[1] = P; } 
+  // Ecrit le gain du coup p dans le tableau t : t[i] est ce que gagne i en ayant joué g[i]
+  if (p[0] && p[1])  { t[0] = C; t[1] = C; } else {
+    if (p[0] && !p[1]) { t[0] = D; t[1] = T; } else {
+      if (!p[0] && p[1]) { t[0] = T; t[1] = D; } else {
+	{ t[0] = P; t[1] = P; } } } }
 }
 
-int* gain_partie(void strat1(int**,int,int), void strat2(int**,int,int), int n) {
-	int** g[n][2] ;
-	for (int i=0,i<n,i++){
-		strat1(g,i,0);
-		strat2(g,i,1);
-	}
-	int** t[n][2];
-	int* s[2];
-	s[0]=0;
-	s[1]=0;
-	for (int i=0, i<n, i++){
-		void gain(int* g[i], int* t[i]);
-		s[0]+=t[i][0];
-		s[1]+=t[i][1];
-	}
-	return s;
+void affr(void strat1(int**,int,int), void strat2(int**,int,int), int** g, int n, int* win) {
+  // Ecrit dans g le résultat de n affrontements de strat1 contre strat2
+  // où g[i][0] contient l'action de strat1 au coup i
+  // et renvoie le gain total obtenu dans win
+  int s[2];
+  s[0] = s[1] = 0;
+  for (int i = 0; i < n; i++){
+    strat1(g,i,0); strat2(g,i,1);
+    gain(g[i],win);
+    s[0] += win[0]; s[1] += win[1];
+  }
+  win[0] = s[0]; win[1] = s[1];
 }
 	
 // Une stratégie est un fonction du type void strat(int**  g, int i, int r)
