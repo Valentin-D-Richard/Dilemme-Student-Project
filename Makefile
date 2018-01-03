@@ -1,5 +1,10 @@
-echo "gcc dilemme1.c -o dilemme1" ;
-gcc dilemme1.c -o dilemme1 ;
+# Makefile dilemme
 
-echo "executing dilemme1" ;
-./dilemme1 ;
+cc=gcc
+CFLAGS=-std=c99 -o
+
+dilemme1.c:
+	$(CC) $(CFLAGS) $@ dilemme1
+
+dilemme2.c:
+	$(CC) $(CFLAGS) $@ dilemme2
