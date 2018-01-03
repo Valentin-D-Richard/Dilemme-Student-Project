@@ -1,6 +1,6 @@
 # Makefile dilemme
 
-cc=gcc
+CC=gcc
 CFLAGS=-std=c99 -o
 
 dilemme1.c:
