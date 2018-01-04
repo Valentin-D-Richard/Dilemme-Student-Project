@@ -8,9 +8,9 @@
 
 int** ecosysteme ( int n, int p, int nb){
  init_dico();
- int** g[11][11];
- for (int i=0,i<11,i++) {
-  for (int j=0,j<=i,j++){
+ int g[11][11];
+ for (int i=0;i<11;i++) {
+  for (int j=0;j<=i;j++){
    int* s=gain_partie(dico[i].fun, dico[j].fun,nb);
    g[i][j]=s[0];
    g[j][i]=s[1];
@@ -19,28 +19,28 @@ int** ecosysteme ( int n, int p, int nb){
   }
  }
  // c c'est le tableaux avec les valeurs des nombres d'individus
- int** c[11][n];
- for (int i=0,i<11,i++){
+ int c[11][n];
+ for (int i=0;i<11;i++){
   c[i][0]=p;
  }
- for (int i=1,i<n, i++){
-  int* P[11];
-  for (int j=0,j<11,j++){
-   for (int k=0,k<11,k++){
+ for (int i=1;i<n; i++){
+  int P[11];
+  for (int j=0;j<11;j++){
+   for (int k=0;k<11;k++){
     (k==j) ? (P[j]+=(c[j][i-1]-1)*g[j][j]) : (P[j]+=(c[j][i-1])*g[j][k]) ;
    }
   }
-  for (int j=0,j<11,j++){
+  for (int j=0;j<11;j++){
    P[j]*=c[j][i-1];
   }
   int s1=0;
-  for (int j=0,j<11,j++){
+  for (int j=0;j<11:j++){
    s1+=P[j];
   }
   int s2=0;
   //je vais remplir maintenant la i-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
-  for (int j=0,j<10,j++){
+  for (int j=0;j<10;j++){
    c[j][i]=11*p*P[j];
    c[j][i]/=s1;
    s2+=c[j][i]; 
