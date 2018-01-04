@@ -1,7 +1,7 @@
 
 #include "dilemmelib.h"
 #include <stdio.h>
-#include <math.h>
+
  
 // n c'est le nombre de générations et p c'est la population à donner à chaque stratégie
 //et nb le nombre de confrontations pour les gains des strats
