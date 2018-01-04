@@ -8,14 +8,15 @@
 
 int** ecosysteme ( int n, int p, int nb){
  init_dico();
- int g[11][11];
+ int g[11][11]; // cela va être la matrice des gains
+ int m[nb][2];
+ int win[2];
  for (int i=0;i<11;i++) {
   for (int j=0;j<=i;j++){
-   int* s=gain_partie(dico[i].fun, dico[j].fun,nb);
-   g[i][j]=s[0];
-   g[j][i]=s[1];
-  //il faut faire une fonction qui sort le gain totale d'une confrontation pour remplir g
-  //avec g[i][j] est le gain de la strat i contre la strat j
+   affr(dico[i].fun, dico[j].fun, m, nb, win);
+   g[i][j]=win[0];
+   g[j][i]=win[1];
+  
   }
  }
  // c c'est le tableaux avec les valeurs des nombres d'individus
