@@ -107,11 +107,23 @@ int** ecosysteme2 ( int n, int p){
  return c;
 }
    
+
+int affiche_matrice (int n, int m, int** M) {
+ for (int i=0, i<n, i++){
+  for (int j=0,j<m,j++){
+   printf("%d\t",M[i][j]);
+  }
+  printf("\n");
+ }
+ return 0;
+}
+
    
  int main (int argc, char** argv) {
   if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); exit(-1); }
   int** p=ecosysteme2 ( argv[1], argv[2]);
   #faire une fonction qui print une matrice
+  int i=affiche_matrice(11,argv[1],p);
   return 0;
  }
 
