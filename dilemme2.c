@@ -108,7 +108,15 @@ int** ecosysteme2 ( int n, int p){
 }
    
    
-   
+ int main (int argc, char** argv) {
+  if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); }
+  int** p=ecosysteme2 ( argv[1], argv[2]);
+  #faire une fonction qui print une matrice
+  return 0;
+ }
+
+  
+  
  
    
    
