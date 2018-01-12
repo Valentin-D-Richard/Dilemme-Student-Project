@@ -1,5 +1,5 @@
+
 #include "dilemmelib.h"
-#include <stdio.h>
 
 int** allocationsquare (int n, int m){
   int** g = malloc(n * sizeof(int *));
@@ -47,7 +47,7 @@ int** ecosysteme ( int n, int p, int nb){
   int G[11];
   for (int j=0;j<11;j++){
    for (int k=0;k<11;k++){
-    (k==j) ? (G[j]+=(c[j][i-1]-1)*g[j][j]) : (G[j]+=(c[j][i-1])*g[j][k]) ;
+    (k==j) ? (G[j]+=(c[j][i-1]-1)*g[j][j]) : (G[j]+=(c[k][i-1])*g[j][k]) ;
    }
   }
   for (int j=0;j<11;j++){
@@ -77,6 +77,7 @@ int** ecosysteme2 ( int n, int p){
  int*** g=allocationtrid(11,11,n);
   // c c'est le tableaux avec les valeurs des nombres d'individus
  int** c=allocationsquare(11,n);
+
  for (int i=0;i<11;i++){
   c[i][0]=p;
  }
@@ -103,13 +104,14 @@ int** ecosysteme2 ( int n, int p){
   }
   for (int j=0;j<11;j++){
    for (int k=0;k<11;k++){
-    (k==j) ? (G[j]+=(c[j][i-1]-1)*r[j][j]) : (G[j]+=(c[j][i-1])*r[j][k]) ;
+    (k==j) ? (G[j]+=(c[j][i-1]-1)*r[j][j]) : (G[j]+=(c[k][i-1])*r[j][k]) ;
    }
   }
   for (int j=0;j<11;j++){
    G[j]*=c[j][i-1];
   }
   int s1=0;
+
   for (int j=0;j<11;j++){
    s1+=G[j];
   }
@@ -139,8 +141,14 @@ int affiche_matrice (int n, int m, int** M) {
 
    
  int main (int argc, char** argv) {
+  printf("blop");
   if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); exit(-1); }
-  int** p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]));
+
+  int** p;
+  p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]));
   int i=affiche_matrice(11,atoi(argv[1]),p);
   return i;
  }
+
+  
+  
