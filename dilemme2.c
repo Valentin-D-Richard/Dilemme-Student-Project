@@ -1,15 +1,34 @@
-
 #include "dilemmelib.h"
 #include <stdio.h>
 
- 
+int** allocationsquare (int n, int m){
+  int** g = malloc(n * sizeof(int *));
+  for(size_t i = 0; i < n; i++){
+	g[i] = malloc(m * sizeof(int));
+  }
+  return g;
+}
+
+int*** allocationtrid (int n, int m, int k){
+  
+  int*** g = malloc(n * sizeof(int **));
+  for(size_t i = 0; i < n; i++){
+	g[i] = malloc(m * sizeof(int *));
+	for(size_t j =0; j<m;j++){
+	  g[i][j] = malloc(k * sizeof(int));
+	}
+  }
+  return g;
+}
+
+
 // n c'est le nombre de générations et p c'est la population à donner à chaque stratégie
 //et nb le nombre de confrontations pour les gains des strats
 
 int** ecosysteme ( int n, int p, int nb){
  init_dico();
- int g[11][11]; // cela va être la matrice des gains
- int m[nb][2];
+ int** g=allocationsquare(11,11); // cela va être la matrice des gains
+ int** m=allocationsquare(nb,2);
  int win[2];
  for (int i=0;i<11;i++) {
   for (int j=0;j<=i;j++){
@@ -20,29 +39,29 @@ int** ecosysteme ( int n, int p, int nb){
   }
  }
  // c c'est le tableaux avec les valeurs des nombres d'individus
- int c[11][n];
+ int** c=allocationsquare(11,n);
  for (int i=0;i<11;i++){
   c[i][0]=p;
  }
  for (int i=1;i<n; i++){
-  int P[11];
+  int G[11];
   for (int j=0;j<11;j++){
    for (int k=0;k<11;k++){
-    (k==j) ? (P[j]+=(c[j][i-1]-1)*g[j][j]) : (P[j]+=(c[j][i-1])*g[j][k]) ;
+    (k==j) ? (G[j]+=(c[j][i-1]-1)*g[j][j]) : (G[j]+=(c[j][i-1])*g[j][k]) ;
    }
   }
   for (int j=0;j<11;j++){
-   P[j]*=c[j][i-1];
+   G[j]*=c[j][i-1];
   }
   int s1=0;
-  for (int j=0;j<11:j++){
-   s1+=P[j];
+  for (int j=0;j<11;j++){
+   s1+=G[j];
   }
   int s2=0;
   //je vais remplir maintenant la i-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
   for (int j=0;j<10;j++){
-   c[j][i]=11*p*P[j];
+   c[j][i]=11*p*G[j];
    c[j][i]/=s1;
    s2+=c[j][i]; 
   }
@@ -55,27 +74,27 @@ int** ecosysteme ( int n, int p, int nb){
 
 int** ecosysteme2 ( int n, int p){
  init_dico();
- int g[11][11][n];
+ int*** g=allocationtrid(11,11,n);
   // c c'est le tableaux avec les valeurs des nombres d'individus
- int c[11][n];
+ int** c=allocationsquare(11,n);
  for (int i=0;i<11;i++){
   c[i][0]=p;
  }
- for (int i=0;i<n,i++){
+ for (int i=0;i<n;i++){
   for (int j=0;j<11;j++) {
    for (int k=0;k<=j;k++){
-    int t[n][2];
+    int** t=allocationsquare(n,2);
     dico[j].fun(t,i,0);
     dico[k].fun(t,i,1);
     g[j][k][i]=t[i][0];
     g[k][j][i]=t[i][1];
    }
   }
-  int P[11];
-  int r[11][11];
+  int G[11];
+  int** r=allocationsquare(11,11);
   for (int k;k<11;k++){
    for (int j;j<11;j++){
-    int p[2]=[g[k][j][i],g[j][k][i]];
+     int p[2]={g[k][j][i],g[j][k][i]};
     int t[2];
     gain(p,t);
     r[k][j]=t[0];
@@ -84,21 +103,21 @@ int** ecosysteme2 ( int n, int p){
   }
   for (int j=0;j<11;j++){
    for (int k=0;k<11;k++){
-    (k==j) ? (P[j]+=(c[j][i-1]-1)*r[j][j]) : (P[j]+=(c[j][i-1])*r[j][k]) ;
+    (k==j) ? (G[j]+=(c[j][i-1]-1)*r[j][j]) : (G[j]+=(c[j][i-1])*r[j][k]) ;
    }
   }
   for (int j=0;j<11;j++){
-   P[j]*=c[j][i-1];
+   G[j]*=c[j][i-1];
   }
   int s1=0;
-  for (int j=0;j<11:j++){
-   s1+=P[j];
+  for (int j=0;j<11;j++){
+   s1+=G[j];
   }
   int s2=0;
   //je vais remplir maintenant la i-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
   for (int j=0;j<10;j++){
-   c[j][i]=11*p*P[j];
+   c[j][i]=11*p*G[j];
    c[j][i]/=s1;
    s2+=c[j][i]; 
   }
@@ -109,8 +128,8 @@ int** ecosysteme2 ( int n, int p){
    
 
 int affiche_matrice (int n, int m, int** M) {
- for (int i=0, i<n, i++){
-  for (int j=0,j<m,j++){
+  for (int i=0; i<n;i++){
+    for (int j=0;j<m;j++){
    printf("%d\t",M[i][j]);
   }
   printf("\n");
@@ -121,14 +140,7 @@ int affiche_matrice (int n, int m, int** M) {
    
  int main (int argc, char** argv) {
   if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); exit(-1); }
-  int** p=ecosysteme2 ( argv[1], argv[2]);
-  #faire une fonction qui print une matrice
-  int i=affiche_matrice(11,argv[1],p);
-  return 0;
+  int** p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]));
+  int i=affiche_matrice(11,atoi(argv[1]),p);
+  return i;
  }
-
-  
-  
- 
-   
-   
