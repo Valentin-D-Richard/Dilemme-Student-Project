@@ -13,7 +13,7 @@
 # on va refaire un autre makefile qui est censé marcher
 
 
-CC=gcc -lm
+CC=gcc 
 CFLAGS=-Wall -std=c99
 
  # target: dépendances
@@ -22,10 +22,10 @@ CFLAGS=-Wall -std=c99
 all: dilemme1 dilemme2
 
 dilemme1 : dilemme1.c dilemmelib.h
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@ -lm
 
 dilemme2 : dilemme2.c dilemmelib.h
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@ -lm
 	
 	
  # $@ raccourci pour la target
