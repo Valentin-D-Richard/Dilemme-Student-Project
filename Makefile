@@ -13,7 +13,7 @@
 # on va refaire un autre makefile qui est censé marcher
 
 
-CC=gcc
+CC=gcc -lm
 CFLAGS=-Wall -std=c99
 
  # target: dépendances
