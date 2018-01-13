@@ -12,10 +12,10 @@ int sum(int** g, int i, int r) ;
 
 // ***** Fonctions utiles pour toutes les parties *****
 
-#define T 5
-#define D 0
-#define C 3
-#define P 1
+int T,D,C,P;
+
+void init_coef(int t, int d, int c, int p) {
+  T = t ; D = d; C = c; P = p ; }
 
 // L'action d'une joueur est un entier : 1 signifie coopérer et 0 trahir
 
@@ -42,7 +42,7 @@ void affr(void strat1(int**,int,int), void strat2(int**,int,int), int** g, int n
   }
   win[0] = s[0]; win[1] = s[1];
 }
-	
+
 // Une stratégie est un fonction du type void strat(int**  g, int i, int r)
 // où g est la matrice des affrontements contre un adversaire,
 //    i indique le numéro du coup
@@ -113,7 +113,7 @@ void init_dico() {
   dico[7].name = "majorite_dur" ; dico[7].fun = &majorite_dur ;
   dico[8].name = "sondeur" ; dico[8].fun = &sondeur ;
   dico[9].name = "donnant_donnant_dur" ; dico[9].fun = &donnant_donnant_dur ;
-  dico[10].name = "rancuniere" ; dico[10].fun = &rancuniere ;	
+  dico[10].name = "rancuniere" ; dico[10].fun = &rancuniere ;
 }
 
 int assoc(char* nom) {
@@ -136,7 +136,7 @@ void print_affr(int** g, int n, int i1, int i2) {
   printf("%s vs %s : \n",dico[i1].name, dico[i2].name);
   for (int j = 0; j < n; j++) printf("%d à %d\n",g[j][0],g[j][1]) ;
 }
-  
+
 void print_cmpct(int** g, int n, int r) {
   // Affiche de manière compacte la colonne r de g en ligne, suivi d'un espace
   for (int j = 0; j < n; j++) printf("%d",g[j][r]) ;
