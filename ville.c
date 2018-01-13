@@ -116,3 +116,6 @@ int main (int argc, char** argv) {
   int i=affiche_matrice(3,atoi(argv[1])+1,p);
   return i;
 }
+
+// si on arrive pas à passer de tableau un argument faire 11 int de 0 ou 1 et je recréer le tableau dans le main
+
