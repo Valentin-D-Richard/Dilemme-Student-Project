@@ -135,7 +135,6 @@ int** ecosysteme2 ( int n, int p){
   }
   for (int j=0;j<11;j++){
    G[j]*=c[j][i];
-   printf("%ld\n",G[j]);
   }
   long s1=0;
   
