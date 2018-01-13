@@ -1,50 +1,27 @@
 # Makefile dilemme
 
-#CC=gcc
-#CFLAGS=-std=c99 -o
-
-#dilemme1.c:
-#	$(CC) $(CFLAGS) $@ dilemme1
-
-#dilemme2.c:
-#	$(CC) $(CFLAGS) $@ dilemme2
-
-
-# on va refaire un autre makefile qui est censé marcher
-
-
-CC=gcc 
+CC=gcc
 CFLAGS=-Wall -std=c99
 
- # target: dépendances
+# target: dépendances
 
-
-all: dilemme1 dilemme2
+all: dilemme1 dilemme2 client server
 
 dilemme1 : dilemme1.c dilemmelib.h
-	$(CC) $(CFLAGS) $< -o $@ -lm
+	$(CC) $(CFLAGS) $< -o $@
 
 dilemme2 : dilemme2.c dilemmelib.h
 	$(CC) $(CFLAGS) $< -o $@ -lm
-	
-	
- # $@ raccourci pour la target
+
+packets.o : packets.c packets.h
+	$(CC) $(CFLAGS) -g $< -c -o $@
+
+client : client.c packets.o dilemmelib.h
+	$(CC) $(CFLAGS) packets.o $< -o $@ -lm
+
+server : server.c packets.o dilemmelib.h
+	$(CC) $(CFLAGS) packets.o $< -o $@ -lm
+
+# $@ raccourci pour la target
 # $^ raccourci pour toutes les dépendances
 # $< raccourci pour la dépendance la plus à gauche
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
