@@ -1,3 +1,4 @@
+
 #include "dilemmelib.h"
 
 
@@ -50,11 +51,11 @@ int** ecosysteme ( int n, int p, int nb){
   }
  }
  // c c'est le tableaux avec les valeurs des nombres d'individus
- int** c=allocationsquare(11,n+1);
+ int** c=allocationsquare(11,(n+1));
  for (int i=0;i<11;i++){
   c[i][0]=p;
  }
- for (int i=1;i<(n+1); i++){
+ for (int i=1;i<n+1; i++){
   long G[11];
   for (int j=0;j<11;j++){
    G[j]=0;
@@ -165,12 +166,8 @@ int** ecosysteme2 ( int n, int p){
 
   int** p;
   p=ecosysteme ( atoi(argv[1]),atoi(argv[2]),1000);
-  int i=affiche_matrice(11,atoi(argv[1]),p);
+  int i=affiche_matrice(11,atoi(argv[1])+1,p);
   return i;
  }
 
   
-  
- 
-   
-   
