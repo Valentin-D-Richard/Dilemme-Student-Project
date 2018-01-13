@@ -163,11 +163,9 @@ int** ecosysteme2 ( int n, int p){
    
  int main (int argc, char** argv) {
   if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); exit(-1); }
-
+  init_coef(5,0,3,1);
   int** p;
   p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]));
   int i=affiche_matrice(11,atoi(argv[1])+1,p);
   return i;
  }
-
-  
