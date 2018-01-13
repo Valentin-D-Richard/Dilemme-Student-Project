@@ -129,7 +129,6 @@ int** ecosysteme2 ( int n, int p){
   for (int j=0;j<11;j++){
    for (int k=0;k<11;k++){
     (k==j) ? (G[j]+=(c[j][i]-1)*r[j][j]) : (G[j]+=(c[k][i])*r[j][k]) ;
-    printf("%ld\n",G[j]);
    
    }
   }
