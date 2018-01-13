@@ -1,5 +1,5 @@
-
 #include "dilemmelib.h"
+
 
 int** allocationsquare (int n, int m){
   int** g = malloc(n * sizeof(int *));
@@ -21,6 +21,17 @@ int*** allocationtrid (int n, int m, int k){
   return g;
 }
 
+int affiche_matrice (int n, int m, int** M) {
+  for (int i=0; i<n;i++){
+    for (int j=0;j<m;j++){
+   printf("%d\t",M[i][j]);
+  }
+  printf("\n");
+ }
+ return 0;
+}
+
+
 
 // n c'est le nombre de générations et p c'est la population à donner à chaque stratégie
 //et nb le nombre de confrontations pour les gains des strats
@@ -39,12 +50,15 @@ int** ecosysteme ( int n, int p, int nb){
   }
  }
  // c c'est le tableaux avec les valeurs des nombres d'individus
- int** c=allocationsquare(11,n);
+ int** c=allocationsquare(11,n+1);
  for (int i=0;i<11;i++){
   c[i][0]=p;
  }
- for (int i=1;i<n; i++){
-  int G[11];
+ for (int i=1;i<(n+1); i++){
+  long G[11];
+  for (int j=0;j<11;j++){
+   G[j]=0;
+ }
   for (int j=0;j<11;j++){
    for (int k=0;k<11;k++){
     (k==j) ? (G[j]+=(c[j][i-1]-1)*g[j][j]) : (G[j]+=(c[k][i-1])*g[j][k]) ;
@@ -53,7 +67,7 @@ int** ecosysteme ( int n, int p, int nb){
   for (int j=0;j<11;j++){
    G[j]*=c[j][i-1];
   }
-  int s1=0;
+  long s1=0;
   for (int j=0;j<11;j++){
    s1+=G[j];
   }
@@ -61,8 +75,9 @@ int** ecosysteme ( int n, int p, int nb){
   //je vais remplir maintenant la i-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
   for (int j=0;j<10;j++){
-   c[j][i]=11*p*G[j];
-   c[j][i]/=s1;
+   long a=11*p*G[j];
+   a=a/s1;
+   c[j][i]=a;
    s2+=c[j][i]; 
   }
   c[10][i]=11*p-s2;
@@ -76,7 +91,8 @@ int** ecosysteme2 ( int n, int p){
  init_dico();
  int*** g=allocationtrid(11,11,n);
   // c c'est le tableaux avec les valeurs des nombres d'individus
- int** c=allocationsquare(11,n);
+ int** c=allocationsquare(11,(n+1));
+
 
  for (int i=0;i<11;i++){
   c[i][0]=p;
@@ -91,64 +107,70 @@ int** ecosysteme2 ( int n, int p){
     g[k][j][i]=t[i][1];
    }
   }
-  int G[11];
+  
+ long G[11];
+ for (int j=0;j<11;j++){
+   G[j]=0;
+ }
   int** r=allocationsquare(11,11);
-  for (int k;k<11;k++){
-   for (int j;j<11;j++){
-     int p[2]={g[k][j][i],g[j][k][i]};
+  for (int k=0;k<11;k++){
+   for (int j=0;j<11;j++){
+     int p[2];
+     p[0]=g[k][j][i];
+     p[1]=g[j][k][i];
     int t[2];
     gain(p,t);
     r[k][j]=t[0];
     r[j][k]=t[1];
    }
   }
+  // la matrice des gains r est bien remplie
   for (int j=0;j<11;j++){
    for (int k=0;k<11;k++){
-    (k==j) ? (G[j]+=(c[j][i-1]-1)*r[j][j]) : (G[j]+=(c[k][i-1])*r[j][k]) ;
+    (k==j) ? (G[j]+=(c[j][i]-1)*r[j][j]) : (G[j]+=(c[k][i])*r[j][k]) ;
+    printf("%ld\n",G[j]);
+   
    }
   }
   for (int j=0;j<11;j++){
-   G[j]*=c[j][i-1];
+   G[j]*=c[j][i];
+   printf("%ld\n",G[j]);
   }
-  int s1=0;
+  long s1=0;
+  
 
   for (int j=0;j<11;j++){
    s1+=G[j];
   }
   int s2=0;
-  //je vais remplir maintenant la i-ème génération avec des parties entières mais pour ne rien perde pour la dernière
+  //je vais remplir maintenant la i+1-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
   for (int j=0;j<10;j++){
-   c[j][i]=11*p*G[j];
-   c[j][i]/=s1;
-   s2+=c[j][i]; 
+   long a=11*p*G[j];
+   a=a/s1;
+   c[j][i+1]=a;
+   s2+=c[j][i+1]; 
   }
-  c[10][i]=11*p-s2;
+  c[10][i+1]=11*p-s2;
  }
  return c;
 }
    
 
-int affiche_matrice (int n, int m, int** M) {
-  for (int i=0; i<n;i++){
-    for (int j=0;j<m;j++){
-   printf("%d\t",M[i][j]);
-  }
-  printf("\n");
- }
- return 0;
-}
+
 
    
  int main (int argc, char** argv) {
-  printf("blop");
   if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); exit(-1); }
 
   int** p;
-  p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]));
+  p=ecosysteme ( atoi(argv[1]),atoi(argv[2]),1000);
   int i=affiche_matrice(11,atoi(argv[1]),p);
   return i;
  }
 
   
   
+ 
+   
+   
