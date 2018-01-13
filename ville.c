@@ -113,6 +113,6 @@ int main (int argc, char** argv) {
   tab[1]=5;
   tab[2]=8;
   p=ville ( atoi(argv[1]),atoi(argv[2]),tab,3); 
-  int i=affiche_matrice(atoi(argv[4]),atoi(argv[1])+1,p);
+  int i=affiche_matrice(3,atoi(argv[1])+1,p);
   return i;
 }
