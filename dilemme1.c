@@ -22,7 +22,7 @@ void res_confrs(int argc, char** argv) {
   // Affiche le tableau des listes des actions pour chaque couple de stratégies, sur argv[2] parties
   int n = atoi(argv[2]);
   int**** tab; // t = tab[i1][i2] est la tableau de la confrotation de i1 contre i2
-               // t[i][r] est l'action de i(r+1) au coup i 
+               // t[i][r] est l'action de i(r+1) au coup i
   tab = malloc(N*sizeof(int****));
   int win[2];
 
@@ -32,7 +32,7 @@ void res_confrs(int argc, char** argv) {
     repeat(" ",(n < 10) ? n : (n-1));
   }
   printf("\n");
-    
+
   for (int i1 = 0; i1 < N; i1++) {
     tab[i1] = malloc(N*sizeof(int***)) ;
     printf("%d\t",i1);
@@ -48,7 +48,7 @@ void res_confrs(int argc, char** argv) {
     printf("%s\n",dico[i1].name);
   }
 }
-  
+
 void tab_cumul(int argc, char** argv) {
   // Affiche le gain total de la strétégie argv[2] contre toutes les stratégies en argv[3] coups
   if (argc != 4) { printf("usage : confr <strat1> <nb de coups>\n"); exit(-1); }
@@ -61,7 +61,7 @@ void tab_cumul(int argc, char** argv) {
 
     int s = 0; // score de i1
     int*** tab; // t = tab[i2] est la tableau de la confrotation de i1 contre i2
-                // t[i][r] est l'action de i(r+1) au coup i 
+                // t[i][r] est l'action de i(r+1) au coup i
     tab = malloc(N*sizeof(int***));
     int win[2];
 
@@ -73,14 +73,14 @@ void tab_cumul(int argc, char** argv) {
       affr(*dico[i1].fun,*dico[i2].fun,tab[i2],n,win);
       s += win[0];
     }
-    
+
     printf("%s gagne %d points contre l'ensemble des stratégies en %d coups \n",dico[i1].name,s,n);
   }
-}  
- 
+}
 
 int main (int argc, char** argv) {
   init_dico();
+  init_coef(5,0,3,1);
   if (argc <= 2) {printf("usage : confr/res/tab <arg1> [<arg2>]\n"); exit(-1);}
   else {
     switch(argv[1][0]) {
