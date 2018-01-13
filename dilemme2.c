@@ -1,5 +1,5 @@
-
 #include "dilemmelib.h"
+
 
 
 int** allocationsquare (int n, int m){
@@ -68,7 +68,7 @@ int** ecosysteme ( int n, int p, int nb){
   for (int j=0;j<11;j++){
    G[j]*=c[j][i-1];
   }
-  long s1=0;
+  double s1=0;
   for (int j=0;j<11;j++){
    s1+=G[j];
   }
@@ -76,8 +76,9 @@ int** ecosysteme ( int n, int p, int nb){
   //je vais remplir maintenant la i-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
   for (int j=0;j<10;j++){
-   long a=11*p*G[j];
+   double a=11*p*G[j];
    a=a/s1;
+   a=floor ((a)+0.5);
    c[j][i]=a;
    s2+=c[j][i]; 
   }
@@ -135,7 +136,7 @@ int** ecosysteme2 ( int n, int p){
   for (int j=0;j<11;j++){
    G[j]*=c[j][i];
   }
-  long s1=0;
+  double s1=0;
   
 
   for (int j=0;j<11;j++){
@@ -145,8 +146,9 @@ int** ecosysteme2 ( int n, int p){
   //je vais remplir maintenant la i+1-ème génération avec des parties entières mais pour ne rien perde pour la dernière
   //stratégie en va faire effectif total - les autres effectifs
   for (int j=0;j<10;j++){
-   long a=11*p*G[j];
+   double a=11*p*G[j];
    a=a/s1;
+   a = floor ((a)+0.5);
    c[j][i+1]=a;
    s2+=c[j][i+1]; 
   }
@@ -163,7 +165,7 @@ int** ecosysteme2 ( int n, int p){
   if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); exit(-1); }
 
   int** p;
-  p=ecosysteme ( atoi(argv[1]),atoi(argv[2]),1000);
+  p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]));
   int i=affiche_matrice(11,atoi(argv[1])+1,p);
   return i;
  }
