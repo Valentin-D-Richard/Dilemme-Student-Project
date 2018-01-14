@@ -23,6 +23,7 @@ populations afin de conserver une population totale constante.
 L'éxécution du code affiche la matrice des populations de tel sorte qu'une ligne correspond à une stratégie et les colones symbolisent les 
 générations, les stratégies sont dans l'ordre du dictionnaire c'est à dire : gentille/méchante/donnant-donnant/méfiante/périodique-
 méchante/périodique-gentille/majorité-mou/majorité-dur/sondeur/donnant-donnant-dur/rancuniière.
+
 Voici les valeurs:
 100	70	31	13	2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
 100	136	161	189	197	198	209	209	209	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	
