@@ -104,16 +104,17 @@ int** ville (int n,int p, int* strat_dispo, int ns){
 
 
 int main (int argc, char** argv) {
-  if (argc!=9) {printf("Il n'y a pas le bon nombre d'arguments "); exit(-1); }
-  init_coef( atoi(argv[5]),atoi(argv[6]),atoi(argv[7]),atoi(argv[8]));
+  if (argc!=18) {printf("Il n'y a pas le bon nombre d'arguments "); exit(-1); }
+  init_coef( atoi(argv[14]),atoi(argv[15]),atoi(argv[16]),atoi(argv[17]));
   int** p;
   // p=ville ( atoi(argv[1]),atoi(argv[2]),argv[3],atoi(argv[4]));
-  int tab[3];
-  tab[0]=0;
-  tab[1]=5;
-  tab[2]=8;
-  p=ville ( atoi(argv[1]),atoi(argv[2]),tab,3); 
-  int i=affiche_matrice(3,atoi(argv[1])+1,p);
+  int n=0;
+  for (int i=0;i<11;i++){ n+=atoi(argv[i+3]);}
+  int tab[n];
+  int j=0;
+  for (int i=0;i<11;i++){(atoi(argv[i+3])!=0) ? (tab[j]=i; j++;) : () ; }	
+  p=ville ( atoi(argv[1]),atoi(argv[2]),tab,n); 
+  int i=affiche_matrice(n,atoi(argv[1])+1,p);
   return i;
 }
 
