@@ -1,11 +1,13 @@
 # Makefile dilemme
 
+
 CC=gcc
 CFLAGS=-Wall -std=c99
 
 # target: dépendances
 
-all: dilemme1 dilemme2 client server
+
+all: dilemme1 dilemme2 client server dilemme3
 
 dilemme1 : dilemme1.c dilemmelib.h
 	$(CC) $(CFLAGS) $< -o $@
@@ -21,6 +23,9 @@ client : client.c packets.o dilemmelib.h
 
 server : server.c packets.o dilemmelib.h
 	$(CC) $(CFLAGS) packets.o $< -o $@ -lm
+
+dilemme3 : dilemme3.c dilemmelib.h
+	$(CC) $(CFLAGS) -pthread $< -o $@ -lm
 
 # $@ raccourci pour la target
 # $^ raccourci pour toutes les dépendances
