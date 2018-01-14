@@ -20,7 +20,7 @@
 #define MAXFILES (ulimit(4))
 
 // the TCP port on which the server installs itself (must be above 1023)
-#define PORT 2552
+#define PORT 2553
 
 // maximal size of a file that we'll allow
 #define MAXSIZE 65535
@@ -28,55 +28,12 @@
 // name of history file
 #define HISTORY "history.txt"
 
-
-#define MAXFILES (ulimit(4))
-#define NBVILLES 2
-
 int all_true(int* tab, int n) {
   for (int i = 0; i < n; i++) {
     if (!tab[i]) return(0);
   }
   return(1);
 }
-
-int** allocationsquare (int n, int m){
-  int** g = malloc(n * sizeof(int *));
-  for(size_t i = 0; i < n; i++){
-	g[i] = malloc(m * sizeof(int));
-  }
-  return g;
-}
-
-
-
-int** migration( int** g){
-int p[NBVILLES]; // p[i] contient la population totale de la ville i
-for (int i=0;i<NBVILLES;i++){
-	for (int j=0;j<11;j++){
-		(g[i][j] !=-1) ? (p[i]+=g[i][j]) : () ;
-	}
-}
-int** immigr;
-immigr=allocationsquare (11,NBVILLES);
-int c[11]; //c[i] contient le numero de la ville qui possède la plus grande proportion de strat i
-for (int i=0;i<11;i++){
-	c[i]=0;
-}
-for (int i=0;i<11;i++){
-	for (int j=0;j<NBVILLES;j++){
-		(g[j][i]>g[c[i]][i]) ? (c[i]=j) : () ;
-	}
-}
-// on va maintenant remplir le double pointeur 
-for (int i=0,i<NBVILLES,i++){
-	for (int j=0,j<11,j++){
-		(g[i][j]= -1) ? () : ( (g[i][j]/p[i]>=1/25) ? () : (immigr[c[j]][j]+=g[i][j]/3;immigr[i][j]-=g[i][j]/3) ;) ;
-		
-	}
-}
-return immigr;
-}
-	
 
 void init_0(int* tab, int n) { for (int i = 0; i < n; i++) tab[i] = 0; }
 
@@ -122,6 +79,47 @@ int wait_for_client (int socket)
 	}
 }
 
+#define MAXFILES (ulimit(4))
+#define NBVILLES 2
+
+int** migration(int** g) {
+  int p[NBVILLES]; // p[i] contient la population totale de la ville i
+  init_0(p,NBVILLES);
+  int i,i1;
+  for (i = 0; i < NBVILLES; i++) {
+    for (i1 = 0; i1 < N ; i1++) {
+      (g[i][i1] !=-1) ? (p[i] += g[i][i1]) : (i = i) ;
+    }
+  }
+  int** immigr;
+  immigr = malloc(NBVILLES*sizeof(int));
+  for (i = 0; i < NBVILLES; i++) {
+    immigr[i] = malloc(N*sizeof(int));
+    for (i1 = 0; i1 < N; i1++) immigr[i][i1] = 0;
+  }
+
+  int c[N]; //c[i1] contient le numero de la ville qui possède la plus grande proportion de strat i1
+  for (i = 0; i < N; i++) c[i]=0;
+  // Cacul de c
+  for (i1 = 0; i1 < N; i1++) {
+    for (i = 0; i < NBVILLES; i++) {
+      (g[i][i1] > g[c[i1]][i1]) ? (c[i1] = i) : (i = i) ;
+    }
+  }
+
+  // Calcul de immigr
+  for (i = 0; i < NBVILLES; i++) {
+    for (i1 = 0; i1 < N; i1++) {
+      float ratio = (float)g[i][i1] / (float)p[i]; //printf("%f; ",ratio);
+      if (g[i][i1] != -1 && g[c[i1]][i1] != -1 && ratio <= 0.04) {
+       immigr[c[i1]][i1] += g[i][i1] / 3;
+       immigr[i][i1] -= g[i][i1] / 3;
+      };
+    }
+  }
+  return immigr;
+}
+
 int main (int argc, char **argv)
 {
 
@@ -135,6 +133,7 @@ int main (int argc, char **argv)
     resp[j] = 0; // resp[j] = 1 ssi la ville j a répondu
     glb_pop[j] = malloc(N*sizeof(int));
   }
+  int** immigr;
 
   char *msg;
   fd_set readfds;
@@ -153,7 +152,7 @@ int main (int argc, char **argv)
   int b;
   for (i = 0; i < n; i++) {
     b = 1;
-    printf("Patie %d\n",i);
+    printf("*** Génération %d ***\n",i);
     while (b) {
 
       // wait for input...
@@ -183,9 +182,11 @@ int main (int argc, char **argv)
         }*/
       if (all_true(resp,NBVILLES)) {
         printf("Migrations\n");
+        immigr = migration(glb_pop);
+
         for (j = 0; j < NBVILLES; j++) {
-          printf("Envoi à %d\n",j);
-          msg = "0 -1 1 0 -1 1 0 -1 1 0 0";
+          //printf("Envoi à %d\n",j);
+          msg = give_pop(immigr[j]);
           send_string(csock[j],msg);
           init_0(resp,NBVILLES);
           //free(msg);
