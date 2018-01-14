@@ -28,12 +28,55 @@
 // name of history file
 #define HISTORY "history.txt"
 
+
+#define MAXFILES (ulimit(4))
+#define NBVILLES 2
+
 int all_true(int* tab, int n) {
   for (int i = 0; i < n; i++) {
     if (!tab[i]) return(0);
   }
   return(1);
 }
+
+int** allocationsquare (int n, int m){
+  int** g = malloc(n * sizeof(int *));
+  for(size_t i = 0; i < n; i++){
+	g[i] = malloc(m * sizeof(int));
+  }
+  return g;
+}
+
+
+
+int** migration( int** g){
+int p[NBVILLES]; // p[i] contient la population totale de la ville i
+for (int i=0;i<NBVILLES;i++){
+	for (int j=0;j<11;j++){
+		(g[i][j] !=-1) ? (p[i]+=g[i][j]) : () ;
+	}
+}
+int** immigr;
+immigr=allocationsquare (11,NBVILLES);
+int c[11]; //c[i] contient le numero de la ville qui possède la plus grande proportion de strat i
+for (int i=0;i<11;i++){
+	c[i]=0;
+}
+for (int i=0;i<11;i++){
+	for (int j=0;j<NBVILLES;j++){
+		(g[j][i]>g[c[i]][i]) ? (c[i]=j) : () ;
+	}
+}
+// on va maintenant remplir le double pointeur 
+for (int i=0,i<NBVILLES,i++){
+	for (int j=0,j<11,j++){
+		(g[i][j]= -1) ? () : ( (g[i][j]/p[i]>=1/25) ? () : (immigr[c[j]][j]+=g[i][j]/3;immigr[i][j]-=g[i][j]/3) ;) ;
+		
+	}
+}
+return immigr;
+}
+	
 
 void init_0(int* tab, int n) { for (int i = 0; i < n; i++) tab[i] = 0; }
 
@@ -78,9 +121,6 @@ int wait_for_client (int socket)
 		return client_socket;
 	}
 }
-
-#define MAXFILES (ulimit(4))
-#define NBVILLES 2
 
 int main (int argc, char **argv)
 {
