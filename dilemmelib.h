@@ -146,3 +146,20 @@ void print_cmpct(int** g, int n, int r) {
 void repeat(char* s, int n) {
   for (int i = 0; i < n; i++) printf("%s",s) ;
 }
+
+char* give_pop(int* pop) {
+  // Renvoie la chaîne de caractères indiquant le nombre d'habitants de chaque stratégie dans la ville
+  // ou -1 si cette stratégie est interdite dans cette ville
+  char* msg; msg = malloc(N*64*sizeof(char));
+  char buff[64];
+  for (int i1 = 0; i1 < N; i1++) {
+    sprintf(buff,"%d ",pop[i1]);
+    strcat(msg,buff);
+  }
+  return(msg);
+}
+
+void get_pop(char* msg, int* immigr) {
+  // Ecrit le message msg de l'immigration dans le tableau immigr
+  for (int i1 = 0; i1 < N; i1++) immigr[i1] = atoi(strtok((i1==0)?msg:NULL," "));
+}
