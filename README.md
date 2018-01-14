@@ -25,6 +25,7 @@ générations, les stratégies sont dans l'ordre du dictionnaire c'est à dire :
 méchante/périodique-gentille/majorité-mou/majorité-dur/sondeur/donnant-donnant-dur/rancuniière.
 
 Voici les valeurs:
+
 100	70	31	13	2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	
 
 100	136	161	189	197	198	209	209	209	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	211	
