@@ -99,17 +99,20 @@ int** ecosysteme2 ( int n, int p){
  for (int i=0;i<11;i++){
   c[i][0]=p;
  }
- for (int i=0;i<n;i++){
-  for (int j=0;j<11;j++) {
-   for (int k=0;k<=j;k++){
-    int** t=allocationsquare(n,2);
-    dico[j].fun(t,i,0);
-    dico[k].fun(t,i,1);
-    g[j][k][i]=t[i][0];
-    g[k][j][i]=t[i][1];
+
+ for (int i=0;i<11;i++){
+   for (int j=0;j<11;j++){
+     int** t;
+     int win[2];
+     t=allocationsquare(n,2);
+     affr(dico[i].fun, dico[j].fun, t, n, win);
+     for (int k=0;k<n;k++){
+       g[i][j][k]=t[k][0];
+       g[j][i][k]=t[k][1];
+     }
    }
-  }
-  
+ }
+ for (int i=0;i<n;i++){ 
  long G[11];
  for (int j=0;j<11;j++){
    G[j]=0;
@@ -165,7 +168,7 @@ int** ecosysteme2 ( int n, int p){
   if (argc!=3) {printf("Il n'y a pas le bon nombre d'arguments baka"); exit(-1); }
   init_coef(5,0,3,1);
   int** p;
-  p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]));
+  p=ecosysteme2 ( atoi(argv[1]),atoi(argv[2]) );
   int i=affiche_matrice(11,atoi(argv[1])+1,p);
   return i;
  }
