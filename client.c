@@ -102,20 +102,26 @@ int** ville (int n,int p, int* strat_dispo, int nb_strat,int socket){
 
   int** t; t = malloc(n*sizeof(int)); //tableau buffer
   for (i = 0; i < n; i++) t[i] = malloc(2*sizeof(int));
-
+// remplissage de g
+   for (i1=0;i1<11;i1++){
+   	for (i2=0;i2<11;i2++){
+     		int** t;
+		t=malloc(n*sizeof(int*));
+		for (i=0;i<n;i++){
+			t[i]=malloc(2*sizeof(int));
+		}
+     		int win[2];
+     		affr(dico[i1].fun, dico[i2].fun, t, n, win);
+     		for ( i=0;i<n;i++){
+       			g[i1][i2][i]=t[i][0];
+       			g[i2][i1][i]=t[i][1];
+     		}
+   	}
+ }	
   for (i = 0; i < n; i++) {
 
     printf("*** Génération %d ***\n",i);
-    // tranche des affrontements
-    for (i1 = 0; i1 < nb_strat; i1++) {
-      for (i2 = 0; i2 <= i1; i2++) {
 
-        dico[strat_dispo[i1]].fun(t,i,0);
-        dico[strat_dispo[i2]].fun(t,i,1);
-        g[i1][i2][i] = t[i][0];
-        g[i2][i1][i] = t[i][1];
-      }
-    }
     printf("Calcul gains\n");
     // tranche des gains
     long G[nb_strat]; // G[i1] est le gain de l'ens. de la pop de la strat i1
