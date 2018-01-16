@@ -12,15 +12,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <time.h>
 
 #include "packets.h"
 #include "dilemmelib.h"
 
 // maximum number of files that a process can open
 #define MAXFILES (ulimit(4))
-
-// the TCP port on which the server installs itself (must be above 1023)
-#define PORT 2553
 
 // maximal size of a file that we'll allow
 #define MAXSIZE 65535
@@ -37,7 +35,7 @@ int all_true(int* tab, int n) {
 
 void init_0(int* tab, int n) { for (int i = 0; i < n; i++) tab[i] = 0; }
 
-int get_server_socket ()
+int get_server_socket (int port)
 {
 	struct sockaddr_in server_address;
 
@@ -48,7 +46,7 @@ int get_server_socket ()
 	// connect the socket to the chosen port
 	server_address.sin_family = AF_INET;
 	server_address.sin_addr.s_addr = INADDR_ANY;
-	server_address.sin_port = htons(PORT);
+	server_address.sin_port = htons(port);
 	if (bind(s,(struct sockaddr *)&server_address,
 				sizeof server_address))
 		fatal_error("Can't bind port");
@@ -80,7 +78,14 @@ int wait_for_client (int socket)
 }
 
 #define MAXFILES (ulimit(4))
-#define NBVILLES 2
+int NBVILLES;
+
+int binom(int n) {
+  // loi binomiale de pamètres n, 1/3
+  int s = 0;
+  for (int i = 0; i < n; i++) s += (rand() % 3 == 0) ? 1 : 0;
+  return(s);
+}
 
 int** migration(int** g) {
   int p[NBVILLES]; // p[i] contient la population totale de la ville i
@@ -112,8 +117,9 @@ int** migration(int** g) {
     for (i1 = 0; i1 < N; i1++) {
       float ratio = (float)g[i][i1] / (float)p[i]; //printf("%f; ",ratio);
       if (g[i][i1] != -1 && g[c[i1]][i1] != -1 && ratio <= 0.04) {
-       immigr[c[i1]][i1] += g[i][i1] / 3;
-       immigr[i][i1] -= g[i][i1] / 3;
+        int migr = binom(g[i][i1]);
+        immigr[c[i1]][i1] += migr;
+        immigr[i][i1] -= migr;
       };
     }
   }
@@ -121,10 +127,11 @@ int** migration(int** g) {
 }
 
 int main (int argc, char **argv)
-{
+{ srand(time(NULL));
 
-  if (argc != 2) {printf("usage: <nb_parties>"); exit(-1);}
+  if (argc != 4) {printf("usage: <nb_parties> <port> <nb_villes>\n"); exit(-1);}
   int i,j;
+  NBVILLES = atoi(argv[3]);
 
   int n = atoi(argv[1]);
   int* resp; resp = malloc(NBVILLES*sizeof(int));
@@ -140,7 +147,7 @@ int main (int argc, char **argv)
 
   // Connexions
   printf("Connexion\n");
-  int socket = get_server_socket();
+  int socket = get_server_socket(atoi(argv[2]));
   int* csock; csock = malloc(NBVILLES*sizeof(int));
   for (j = 0; j < NBVILLES; j++) csock[j] = wait_for_client(socket);
 
