@@ -11,16 +11,12 @@
 #include "packets.h"
 #include "dilemmelib.h"
 
-// port must be the same as in server
-#define PORT 2553
-#define HOSTNAME "10.dptinfo.ens-cachan.fr"
-
 #define MAXFILES (ulimit(4))
 
 
 // This connects to the server at the given port and returns a socket
 // for communication.
-int connect_to_server ()
+int connect_to_server (int port, char* hostname)
 {
 	// Create a TCP socket
 	int s = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -28,7 +24,7 @@ int connect_to_server ()
 
 	// Find the IP address of the host machine (where the server is
 	// supposed to run).
-	struct hostent *host_address = gethostbyname(HOSTNAME);
+	struct hostent *host_address = gethostbyname(hostname);
 	if (!host_address) fatal_error("Unknown host");
 
 	// Build the address from hostname and port.
@@ -37,7 +33,7 @@ int connect_to_server ()
 	memcpy(&server_address.sin_addr,
 		host_address->h_addr_list[0],
 		host_address->h_length);
-	server_address.sin_port = htons(PORT);
+	server_address.sin_port = htons(port);
 
 	// Connect to the server
 	if (connect(s,(struct sockaddr *)&server_address,
@@ -94,30 +90,26 @@ int** ville (int n,int p, int* strat_dispo, int nb_strat,int socket){
     for (i2 = 0; i2 < nb_strat; i2++) g[i1][i2] = malloc(n*sizeof(int));
   }
   //g[i1][i2] contient le tableau de réposes de i1 dans sa confrontation avec i2
-  printf("la\n");
+
   // c[i1][i] contient la population de la strat i1 à la génération i
   int** c; c = malloc(nb_strat*sizeof(int*));
   for (i1 = 0; i1 < nb_strat; i1++) c[i1] = malloc((n+1)*sizeof(int));
   for (i1 = 0; i1 < nb_strat; i1++) c[i1][0] = p;
 
-  int** t; t = malloc(n*sizeof(int)); //tableau buffer
+  int** t; t = malloc(n*sizeof(int*)); //tableau buffer
   for (i = 0; i < n; i++) t[i] = malloc(2*sizeof(int));
-// remplissage de g
-   for (i1=0;i1<11;i1++){
-   	for (i2=0;i2<11;i2++){
-     		int** t;
-		t=malloc(n*sizeof(int*));
-		for (i=0;i<n;i++){
-			t[i]=malloc(2*sizeof(int));
-		}
-     		int win[2];
-     		affr(dico[i1].fun, dico[i2].fun, t, n, win);
-     		for ( i=0;i<n;i++){
-       			g[i1][i2][i]=t[i][0];
-       			g[i2][i1][i]=t[i][1];
-     		}
-   	}
- }	
+  int* win; win = malloc(2*sizeof(int));
+
+  // remplissage de g
+  for (i1 = 0; i1 < nb_strat; i1++) {
+    for (i2 = 0; i2 < nb_strat; i2++) {
+      affr(*dico[strat_dispo[i1]].fun,*dico[strat_dispo[i2]].fun, t, n, win);
+      for (i = 0; i < n; i++) {
+        g[i1][i2][i] = t[i][0];
+        g[i2][i1][i] = t[i][1];
+      }
+    }
+  }
   for (i = 0; i < n; i++) {
 
     printf("*** Génération %d ***\n",i);
@@ -178,7 +170,7 @@ int** ville (int n,int p, int* strat_dispo, int nb_strat,int socket){
 }
 
 int main(int argc, char** argv) {
-  if (argc != 1+2+N+4) {printf("usage: <nb_generations> <initial_pop_per_strat> <tab_authorized_strat[%d]> <tab_coef[4]>\n",N); exit(-1);}
+  if (argc != 1+2+N+4+2) {printf("usage: <nb_generations> <initial_pop_per_strat> <tab_authorized_strat[%d]> <tab_coef[4]> <port> <server_hostname>\n",N); exit(-1);}
   init_dico();
 
   printf("Mise en place\n");
@@ -192,7 +184,7 @@ int main(int argc, char** argv) {
   init_coef(atoi(argv[14]),atoi(argv[15]),atoi(argv[16]),atoi(argv[17]));
 
   printf("Connexion\n");
-  int socket = connect_to_server();
+  int socket = connect_to_server(atoi(argv[18]),argv[19]);
   int b = 1;
   fd_set readfds;
   char* msg;
