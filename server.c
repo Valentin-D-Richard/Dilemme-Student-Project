@@ -108,7 +108,7 @@ int** migration(int** g) {
   // Cacul de c
   for (i1 = 0; i1 < N; i1++) {
     for (i = 0; i < NBVILLES; i++) {
-      (g[i][i1] > g[c[i1]][i1]) ? (c[i1] = i) : (i = i) ;
+	(g[i][i1]/p[i] > g[c[i1]][i1]/p[c[i1]]) ? (c[i1] = i) : (i = i) ;
     }
   }
 
