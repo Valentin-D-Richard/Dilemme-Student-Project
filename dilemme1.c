@@ -29,7 +29,7 @@ void res_confrs(int argc, char** argv) {
   printf("\t");
   for (int j = 0; j < N; j++) {
     printf("%d",j);
-    repeat(" ",(n < 10) ? n : (n-1));
+    repeat(" ",(n < 10) ? (n+1) : n);
   }
   printf("\n");
 
