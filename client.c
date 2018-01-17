@@ -51,15 +51,15 @@ void reseau(int i, int** c,int* strat_dispo, int nb_strat, int socket) {
   int* pop; pop = malloc(N*sizeof(int));
   for (int i1 = 0; i1 < N; i1++) pop[i1] = -1;
   for (int i1 = 0; i1 < nb_strat; i1++) pop[strat_dispo[i1]] = c[i1][i+1];
-  int* immigr; immigr = malloc(N*sizeof(int));
+  int* immigr; immigr = malloc((N+1)*sizeof(int));
   // immigr[i1] contient le nombre d'habitant arrivant dans la ville i de la stratégie i1
 
   //Envoi de la situation de la ville
   msg = give_pop(pop);
   send_string(socket,msg);
-  free(msg);
+  //free(msg);
 
-  //printf("Réception\n");
+  printf("Réception\n");
   // Réception de la population globale et mise à jour
   int b = 1;
   while (b) {
@@ -69,7 +69,7 @@ void reseau(int i, int** c,int* strat_dispo, int nb_strat, int socket) {
       receive_packet(socket,(void**)&msg);
       printf("Message reçu : %s\n",msg);
       b = 0;
-    }
+    };
     printf("Immigrations\n");
     get_pop(msg,immigr);
     for (int i1 = 0; i1 < nb_strat; i1++) c[i1][i+1] += immigr[strat_dispo[i1]];
@@ -170,7 +170,7 @@ int** ville (int n,int p, int* strat_dispo, int nb_strat,int socket){
 }
 
 int main(int argc, char** argv) {
-  if (argc != 1+2+N+4+2) {printf("usage: <nb_generations> <initial_pop_per_strat> <tab_authorized_strat[%d]> <tab_coef[4]> <port> <server_hostname>\n",N); exit(-1);}
+  if (argc != 1+2+N+4+3) {printf("usage: <nb_generations> <initial_pop_per_strat> <tab_authorized_strat[%d]> <tab_coef[4]> <port> <server_hostname> <num_machine>\n",N); exit(-1);}
   init_dico();
 
   printf("Mise en place\n");
@@ -188,14 +188,17 @@ int main(int argc, char** argv) {
   int b = 1;
   fd_set readfds;
   char* msg;
+
+
   // Démarrage
   while (b) {
     FD_ZERO(&readfds);
     FD_SET(socket,&readfds);	// .. from server
     if (FD_ISSET(socket,&readfds)) {
       receive_packet(socket,(void**)&msg);
-      //printf("Message reçu : %s\n",msg);
-      b = 0;
+      printf("Message reçu : %s\n",msg);
+      if (b == 1) send_string(socket,argv[20]);
+      b = (b + 1) % 3;
     }
   }
   sleep(1); // attend un peu le serveur
