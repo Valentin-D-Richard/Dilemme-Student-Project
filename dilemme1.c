@@ -19,7 +19,7 @@ void confr(int argc, char** argv) {
 }
 
 void res_confrs(int argc, char** argv) {
-  // Affiche le tableau des listes des actions pour chaque couple de stratégies, sur argv[2] parties
+  // Affiche le tableau des gains pour chaque couple de stratégies, sur argv[2] parties
   int n = atoi(argv[2]);
   int**** tab; // t = tab[i1][i2] est la tableau de la confrotation de i1 contre i2
                // t[i][r] est l'action de i(r+1) au coup i
