@@ -26,6 +26,9 @@
 // name of history file
 #define HISTORY "history.txt"
 
+#define MAXFILES (ulimit(4))
+int NBVILLES;
+
 int all_true(int* tab, int n) {
   for (int i = 0; i < n; i++) {
     if (!tab[i]) return(0);
@@ -34,6 +37,18 @@ int all_true(int* tab, int n) {
 }
 
 void init_0(int* tab, int n) { for (int i = 0; i < n; i++) tab[i] = 0; }
+
+void print_server (int i, int* corr, int** glb_pop, int** immigr) {
+  int j,i1;
+  printf("\t\t\t\t\t***** Génération %d *****\n",i);
+  for (j = 0; j < NBVILLES; j++) {
+    printf("Ville %d :\nPopulation\t",corr[j]);
+    for (i1 = 0; i1 < N; i1++) printf("%d\t",glb_pop[j][i1]);
+    printf("\nMigrations\t");
+    for (i1 = 0; i1 < N; i1++) printf("%d\t",immigr[j][i1]);
+    printf("\n");
+  }
+}
 
 int get_server_socket (int port)
 {
@@ -77,9 +92,6 @@ int wait_for_client (int socket)
 	}
 }
 
-#define MAXFILES (ulimit(4))
-int NBVILLES;
-
 int binom(int n) {
   // loi binomiale de pamètres n, 1/3
   int s = 0;
@@ -108,14 +120,14 @@ int** migration(int** g) {
   // Cacul de c
   for (i1 = 0; i1 < N; i1++) {
     for (i = 0; i < NBVILLES; i++) {
-	(g[i][i1]/p[i] > g[c[i1]][i1]/p[c[i1]]) ? (c[i1] = i) : (i = i) ;
+      ((float)g[i][i1] / (float)p[i] > (float)g[c[i1]][i1] / (float)p[c[i1]]) ? (c[i1] = i) : (i = i);
     }
   }
 
   // Calcul de immigr
   for (i = 0; i < NBVILLES; i++) {
     for (i1 = 0; i1 < N; i1++) {
-      float ratio = (float)g[i][i1] / (float)p[i]; //printf("%f; ",ratio);
+      float ratio = (float)g[i][i1] / (float)p[i];
       if (g[i][i1] != -1 && g[c[i1]][i1] != -1 && ratio <= 0.04) {
         int migr = binom(g[i][i1]);
         immigr[c[i1]][i1] += migr;
@@ -144,22 +156,51 @@ int main (int argc, char **argv)
 
   char *msg;
   fd_set readfds;
+  int b = 1;
+
 
   // Connexions
-  printf("Connexion\n");
+  printf("Connexions\n");
   int socket = get_server_socket(atoi(argv[2]));
   int* csock; csock = malloc(NBVILLES*sizeof(int));
   for (j = 0; j < NBVILLES; j++) csock[j] = wait_for_client(socket);
 
 
   // Démarrage
+  printf("Démarrage\n");
   for (j = 0; j < NBVILLES; j++) send_string(csock[j],"start");
+  int* corr; corr = malloc(N*sizeof(int)); // corresponance socket/machine
+  while (b) {
 
+    // wait for input...
+    FD_ZERO(&readfds);
+    for (j = 0; j < NBVILLES; j++) FD_SET(csock[j],&readfds); // from client
+    FD_SET(0,&readfds);		// .. from console
+    //FD_SET(socket,&readfds);	// .. another connection
+    if (select(MAXFILES, &readfds, NULL, NULL, NULL) <0) continue;
+
+    // check where input arrived
+    for (j = 0; j < NBVILLES; j++) {
+      if (FD_ISSET(csock[j],&readfds)) {
+        receive_packet(csock[j],(void**)&msg);
+        //printf("Message reçu par %d : %s\n",j,msg);
+        resp[j] = 1;
+        corr[j] = atoi(msg);
+        free(msg);
+      };
+    }
+    if (all_true(resp,NBVILLES)) b = 0;
+  }
+  init_0(resp,NBVILLES);
+  for (j = 0; j < NBVILLES; j++) send_string(csock[j],"beginning");
+
+
+  // Simulation
   printf("Simulation\n");
-  int b;
+  b = 1;
   for (i = 0; i < n; i++) {
     b = 1;
-    printf("*** Génération %d ***\n",i);
+    //printf("*** Génération %d ***\n",i);
     while (b) {
 
       // wait for input...
@@ -173,32 +214,26 @@ int main (int argc, char **argv)
       for (j = 0; j < NBVILLES; j++) {
         if (FD_ISSET(csock[j],&readfds)) {
           receive_packet(csock[j],(void**)&msg);
-          printf("Message reçu par %d : %s\n",j,msg);
+          //printf("Message reçu par %d : %s\n",j,msg);
           resp[j] = 1;
           get_pop(msg,glb_pop[j]);
-          free(msg);
+          //free(msg);
         };
       }
-      /*if (FD_ISSET(0,&readfds))
-        {
-        scanf("%ms",&msg);
-        printf("server said: %s\n",msg);
-        send_string(csock1,msg);
-        send_string(csock2,msg);
-        free(msg);
-        }*/
       if (all_true(resp,NBVILLES)) {
-        printf("Migrations\n");
+        //printf("Migrations\n");
         immigr = migration(glb_pop);
+
+        print_server(i,corr,glb_pop,immigr);
 
         for (j = 0; j < NBVILLES; j++) {
           //printf("Envoi à %d\n",j);
-          msg = give_pop(immigr[j]);
+          msg = give_pop(immigr[j]); //machine -1 représente le serveur
           send_string(csock[j],msg);
-          init_0(resp,NBVILLES);
           //free(msg);
         }
         b = 0;
+        init_0(resp,NBVILLES);
       }
     }
   }
