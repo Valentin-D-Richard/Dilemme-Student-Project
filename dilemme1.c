@@ -28,8 +28,8 @@ void res_confrs(int argc, char** argv) {
 
   printf("\t");
   for (int j = 0; j < N; j++) {
-    printf("%d",j);
-    repeat(" ",(n < 10) ? (n+1) : n);
+    printf("%d\t",j);
+    //repeat(" ",(n < 10) ? n : (n-1));
   }
   printf("\n");
 
@@ -43,7 +43,8 @@ void res_confrs(int argc, char** argv) {
       for (int i = 0; i < n; i++) tab[i1][i2][i] = malloc(2*sizeof(int)) ;
 
       affr(*dico[i1].fun,*dico[i2].fun,tab[i1][i2],n,win);
-      print_cmpct(tab[i1][i2],n,0);
+      //print_cmpct(tab[i1][i2],n,0);
+      printf("%d\t",win[0]);
     }
     printf("%s\n",dico[i1].name);
   }
