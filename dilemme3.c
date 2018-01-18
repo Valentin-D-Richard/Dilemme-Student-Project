@@ -75,7 +75,7 @@ int main (int argc, char** argv) {
     strcat(st[j],".dptinfo.ens-cachan.fr \"$PWD/client ");
     strcat(st[j],argv[1]); strcat(st[j],p[j]); strcat(st[j],pop[j]); strcat(st[j],coef[j]);
     strcat(st[j],argv[2]); strcat(st[j]," "); strcat(st[j],argv[3]); strcat(st[j]," ");
-    strcat(st[j],buff); strcat(st[j]," > /dev/null\"");
+    strcat(st[j],buff); strcat(st[j],"\"");
   }
 
   char s[200];
@@ -86,7 +86,7 @@ int main (int argc, char** argv) {
   // Lancements parallèles
   pthread_t* pt; pt = malloc(NBVILLES*sizeof(pthread_t)); pthread_t serv;
   pthread_create(&serv,NULL,routine,(void*)s);
-  sleep(2);
+  sleep(1);
   for (j = 0; j < NBVILLES; j++) pthread_create(&pt[j],NULL,routine,(void*)st[j]);
 
   pthread_join(serv,NULL);
