@@ -99,7 +99,7 @@ int binom(int n) {
   return(s);
 }
 
-int** migration(int** g) {
+void migration(int** g, int** immigr) {
   int p[NBVILLES]; // p[i] contient la population totale de la ville i
   init_0(p,NBVILLES);
   int i,i1;
@@ -108,12 +108,7 @@ int** migration(int** g) {
       (g[i][i1] !=-1) ? (p[i] += g[i][i1]) : (i = i) ;
     }
   }
-  int** immigr;
-  immigr = malloc(NBVILLES*sizeof(int));
-  for (i = 0; i < NBVILLES; i++) {
-    immigr[i] = malloc(N*sizeof(int));
-    for (i1 = 0; i1 < N; i1++) immigr[i][i1] = 0;
-  }
+  for (i = 0; i < NBVILLES; i++) init_0(immigr[i],N);
 
   int c[N]; //c[i1] contient le numero de la ville qui possède la plus grande proportion de strat i1
   for (i = 0; i < N; i++) c[i]=0;
@@ -135,7 +130,6 @@ int** migration(int** g) {
       };
     }
   }
-  return immigr;
 }
 
 int main (int argc, char **argv)
@@ -152,7 +146,6 @@ int main (int argc, char **argv)
     resp[j] = 0; // resp[j] = 1 ssi la ville j a répondu
     glb_pop[j] = malloc(N*sizeof(int));
   }
-  int** immigr;
 
   char *msg;
   fd_set readfds;
@@ -163,7 +156,8 @@ int main (int argc, char **argv)
   printf("Connexions\n");
   int socket = get_server_socket(atoi(argv[2]));
   int* csock; csock = malloc(NBVILLES*sizeof(int));
-  for (j = 0; j < NBVILLES; j++) csock[j] = wait_for_client(socket);
+  for (j = 0; j < NBVILLES; j++) {csock[j] = wait_for_client(socket); printf("=");}
+  printf("> Effectués\n");
 
 
   // Démarrage
@@ -197,6 +191,8 @@ int main (int argc, char **argv)
 
   // Simulation
   printf("Simulation\n");
+  int** immigr; immigr = malloc(NBVILLES*sizeof(int*));
+  for (i = 0; i < NBVILLES; i++) immigr[i] = malloc(N*sizeof(int));
   b = 1;
   for (i = 0; i < n; i++) {
     b = 1;
@@ -222,7 +218,9 @@ int main (int argc, char **argv)
       }
       if (all_true(resp,NBVILLES)) {
         //printf("Migrations\n");
-        immigr = migration(glb_pop);
+        printf("\n");
+
+        migration(glb_pop,immigr);
 
         print_server(i,corr,glb_pop,immigr);
 
