@@ -153,17 +153,20 @@ int main (int argc, char **argv)
 
 
   // Connexions
-  printf("Connexions\n");
+  printf("Connexions\n|");
   int socket = get_server_socket(atoi(argv[2]));
   int* csock; csock = malloc(NBVILLES*sizeof(int));
-  for (j = 0; j < NBVILLES; j++) {csock[j] = wait_for_client(socket); printf("=");}
+  for (j = 0; j < NBVILLES; j++) {
+    csock[j] = wait_for_client(socket);
+    fprintf(stdout,"="); fflush(stdout);
+  }
   printf("> Effectués\n");
 
 
   // Démarrage
   printf("Démarrage\n");
-  for (j = 0; j < NBVILLES; j++) send_string(csock[j],"start");
   int* corr; corr = malloc(N*sizeof(int)); // corresponance socket/machine
+  for (j = 0; j < NBVILLES; j++) send_string(csock[j],"start");
   while (b) {
 
     // wait for input...
@@ -179,12 +182,14 @@ int main (int argc, char **argv)
         receive_packet(csock[j],(void**)&msg);
         //printf("Message reçu par %d : %s\n",j,msg);
         resp[j] = 1;
+        printf("reçu de %d\n",j);
         corr[j] = atoi(msg);
-        free(msg);
+        //free(msg);
       };
     }
     if (all_true(resp,NBVILLES)) b = 0;
   }
+  printf("ici\n");
   init_0(resp,NBVILLES);
   for (j = 0; j < NBVILLES; j++) send_string(csock[j],"beginning");
 
