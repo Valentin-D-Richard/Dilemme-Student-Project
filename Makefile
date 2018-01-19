@@ -24,7 +24,7 @@ client : client.c packets.o dilemmelib.h
 server : server.c packets.o dilemmelib.h
 	$(CC) $(CFLAGS) packets.o $< -o $@ -lm
 
-dilemme3 : dilemme3.c dilemmelib.h
+dilemme3 : dilemme3.c packets.o dilemmelib.h
 	$(CC) $(CFLAGS) -pthread $< -o $@ -lm
 
 # $@ raccourci pour la target
