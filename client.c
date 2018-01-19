@@ -197,7 +197,11 @@ int main(int argc, char** argv) {
     if (FD_ISSET(socket,&readfds)) {
       receive_packet(socket,(void**)&msg);
       printf("Message reçu : %s\n",msg);
-      if (b == 1) {send_string(socket,argv[20]); printf("Numéro envoyé\n");}
+      if (b == 1) { // après start
+	sleep(1);
+	send_string(socket,argv[20]);
+	printf("Numéro envoyé\n");
+      }
       b = (b + 1) % 3;
       sleep(1);
     }
