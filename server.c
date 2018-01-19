@@ -164,7 +164,7 @@ int main (int argc, char **argv)
 
 
   // Démarrage
-  printf("Démarrage\n");
+  printf("Démarrage\n|");
   int* corr; corr = malloc(N*sizeof(int)); // corresponance socket/machine
   for (j = 0; j < NBVILLES; j++) send_string(csock[j],"start");
   while (b) {
@@ -182,14 +182,15 @@ int main (int argc, char **argv)
         receive_packet(csock[j],(void**)&msg);
         //printf("Message reçu par %d : %s\n",j,msg);
         resp[j] = 1;
-        printf("reçu de %d\n",j);
         corr[j] = atoi(msg);
+        fprintf(stdout,"="); fflush(stdout);
         //free(msg);
       };
     }
     if (all_true(resp,NBVILLES)) b = 0;
   }
-  printf("ici\n");
+  printf("> Effectué\n");
+
   init_0(resp,NBVILLES);
   for (j = 0; j < NBVILLES; j++) send_string(csock[j],"beginning");
 
@@ -231,7 +232,7 @@ int main (int argc, char **argv)
 
         for (j = 0; j < NBVILLES; j++) {
           //printf("Envoi à %d\n",j);
-          msg = give_pop(immigr[j]); //machine -1 représente le serveur
+          msg = give_pop(immigr[j]);
           send_string(csock[j],msg);
           //free(msg);
         }
